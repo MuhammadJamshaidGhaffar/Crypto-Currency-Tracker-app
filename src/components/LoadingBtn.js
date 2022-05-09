@@ -29,7 +29,7 @@ const theme = createTheme({
 function LoadingBtn({ style, loading, onClick, loadingIndicator, children }) {
   return (
     <ThemeProvider theme={theme}>
-      <Button variant="contained" color="primary">
+      <Button variant="contained" color="primary" onClick={onClick}>
         {children}
       </Button>
     </ThemeProvider>

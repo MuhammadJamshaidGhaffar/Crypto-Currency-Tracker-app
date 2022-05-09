@@ -1,6 +1,9 @@
 import { TextField } from "@mui/material";
+import { useContext } from "react";
+import Context from "../contexts/Context";
 
 export default ({ style }) => {
+  let [contextObj] = useContext(Context);
   return (
     <div style={style}>
       <TextField

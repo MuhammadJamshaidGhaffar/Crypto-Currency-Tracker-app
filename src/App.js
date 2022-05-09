@@ -6,6 +6,11 @@ import LineGraph from "./components/LineGraph";
 import AutoComplete from "./components/AutoComplete";
 import Convert from "./components/Convert";
 
+// ---------- Context -------------
+import Context from "./contexts/Context";
+import { useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
+
 let data = [
   {
     id: "BTC",
@@ -81,55 +86,77 @@ let data = [
 ];
 
 function App() {
+  const [contextObj, setContextObj] = useState({ data: [], url: [] });
+  const [isFetching, setFetching] = useState(true);
+  useEffect(() => {
+    console.log("fetching data");
+    setFetching(true);
+    setTimeout(() => {
+      setFetching(false);
+    }, 3000);
+  }, [contextObj.url]);
   console.log(data);
   return (
     <div className={styles.App}>
-      <AutoComplete style={{ margin: "auto" }} />
-      <div
-        id="LogoNameWrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "1.5rem 0rem 0.7rem",
-        }}
-      >
-        <img
-          id="CurrencyLogo"
-          src="https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/btc.svg"
-          style={{
-            width: "3rem",
-          }}
-        />
-        <h2 style={{ marginLeft: "0.7" }}>Bitcoin</h2>
-      </div>
-      <div
-        id="rateWrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "0.5rem 0rem 0.7rem",
-        }}
-      >
-        <h2 style={{ color: "#07e81a" }}>
-          <span id="rate">34,000</span> USD
-        </h2>
-        <div>
-          <TrendingDownIcon
-            sx={{
-              color: "#fa0505",
-              border: "1px solid",
-              borderRadius: "5rem",
-              fontSize: "3.2rem",
-              marginLeft: "10px",
-              padding: "0.3rem",
-            }}
-          ></TrendingDownIcon>
-        </div>
-      </div>
-      <LineGraph />
-      <Convert style={{ textAlign: "center", margin: "2rem 0" }} />
+      <Context.Provider value={[contextObj, setContextObj]}>
+        <AutoComplete style={{ margin: "auto" }} />
+        {isFetching ? (
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontSize: "3rem", margin: "6rem 0 2rem" }}>
+              Fetching data
+            </p>
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
+            <div
+              id="LogoNameWrapper"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "1.5rem 0rem 0.7rem",
+              }}
+            >
+              <img
+                id="CurrencyLogo"
+                src="https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/btc.svg"
+                style={{
+                  width: "3rem",
+                }}
+              />
+              <h2 style={{ marginLeft: "0.7" }}>Bitcoin</h2>
+            </div>
+            <div
+              id="rateWrapper"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "0.5rem 0rem 0.7rem",
+              }}
+            >
+              <h2 style={{ color: "#07e81a" }}>
+                <span id="rate">34,000</span> USD
+              </h2>
+              <div>
+                <TrendingDownIcon
+                  sx={{
+                    color: "#fa0505",
+                    border: "1px solid",
+                    borderRadius: "5rem",
+                    fontSize: "3.2rem",
+                    marginLeft: "10px",
+                    padding: "0.3rem",
+                  }}
+                ></TrendingDownIcon>
+              </div>
+            </div>
+            <LineGraph />
+            <Convert style={{ textAlign: "center", margin: "2rem 0" }} />
+          </>
+        )}
+      </Context.Provider>
     </div>
   );
 }
