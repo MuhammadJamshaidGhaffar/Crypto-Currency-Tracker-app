@@ -1,19 +1,20 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import Grid from "@mui/material/Grid";
-import { sizing } from "@mui/system";
 
-export default function ComboBox() {
+import LoadingBtn from "./LoadingBtn";
+// ------------- Styling -------------
+import styles from "./AutoComplete.module.css";
+///////////////////////////////////
+export default function ComboBox({ style }) {
   const [value, setValue] = React.useState("None");
+
+  // const [loading, setLoading] = React.useState(true);
+  // function handleClick() {
+  //   setLoading(true);
+  // }
   return (
-    <div
-      style={{
-        display: "flex",
-        maxWidth: "426px",
-        justifyContent: "space-between",
-      }}
-    >
+    <div style={style} className={styles.container}>
       <Autocomplete
         sx={{ width: 300 }}
         disableClearable
@@ -32,6 +33,7 @@ export default function ComboBox() {
         options={toCurrency}
         renderInput={(params) => <TextField {...params} label="To" />}
       />
+      <LoadingBtn>GET</LoadingBtn>
     </div>
   );
 }
