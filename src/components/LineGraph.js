@@ -55,7 +55,7 @@ export default function LineGraph() {
       },
     ],
   };
-  console.log("Inside grapgh , \n", contextObj);
+  console.log("Inside graph component, \n My data is : ", contextObj.data);
   return (
     <div style={{ maxWidth: "700px", margin: "auto" }}>
       <Line options={options} data={data} />
