@@ -62,6 +62,7 @@ function AutoComplete({ style }) {
                 cryptoCurrency[currency.crypto],
                 toCurrency[currency.convert]
               ),
+              convert: toCurrency[currency.convert],
             });
           }
         }}

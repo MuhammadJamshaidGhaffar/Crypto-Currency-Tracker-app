@@ -1,4 +1,5 @@
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 //------------------- my components ----------------
 import styles from "./App.module.css";
@@ -11,7 +12,120 @@ import Context from "./contexts/Context";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 
-let data = [
+function App() {
+  const [contextObj, setContextObj] = useState({
+    data: [],
+    url: [],
+    convert: "USD",
+  });
+  const [isFetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    console.log("fetching data");
+    setFetching(true);
+    setTimeout(() => {
+      setContextObj({ ...contextObj, data: filterData(dataSample[0]) });
+      setFetching(false);
+    }, 1000);
+  }, [contextObj.url]);
+
+  return (
+    <div className={styles.App}>
+      <Context.Provider value={[contextObj, setContextObj]}>
+        <AutoComplete style={{ margin: "auto" }} />
+        {isFetching ? (
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontSize: "3rem", margin: "6rem 0 2rem" }}>
+              Fetching data
+            </p>
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
+            <div
+              id="LogoNameWrapper"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "1.5rem 0rem 0.7rem",
+              }}
+            >
+              <img
+                id="CurrencyLogo"
+                src={contextObj.data.logo_url}
+                style={{
+                  width: "3rem",
+                }}
+              />
+              <h2 style={{ marginLeft: "0.7" }}>{contextObj.data.name}</h2>
+            </div>
+            <div
+              id="rateWrapper"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "0.5rem 0rem 0.7rem",
+              }}
+            >
+              <h2 style={{ color: "#07e81a" }}>
+                <span id="rate">{contextObj.data.price}</span> USD
+              </h2>
+              <div>
+                {contextObj.data.price > contextObj.data.price1d ? (
+                  <TrendingUpIcon
+                    sx={{ ...trendingStyle, color: "#05f50d" }}
+                  ></TrendingUpIcon>
+                ) : (
+                  <TrendingDownIcon
+                    sx={{ ...trendingStyle, color: "#fa0505" }}
+                  ></TrendingDownIcon>
+                )}
+              </div>
+            </div>
+            <LineGraph />
+            <Convert style={{ textAlign: "center", margin: "2rem 0" }} />
+          </>
+        )}
+      </Context.Provider>
+    </div>
+  );
+}
+
+export default App;
+
+//-------------- functions --------------------------
+function filterData(data) {
+  console.log(data);
+  let { id, name, logo_url, price } = data;
+  let price1d = price - data["1d"].price_change;
+  let price7d = price - data["7d"].price_change;
+  let price30d = price - data["30d"].price_change;
+  let price365d = price - data["365d"].price_change;
+  console.log(`${id}  , ${name} , ${price} , ${price1d} , ${price365d}`);
+  console.log(typeof price);
+  return {
+    id: id,
+    name: name,
+    logo_url: logo_url,
+    price: parseFloat(price).toFixed(4),
+    price1d: parseFloat(price1d).toFixed(2),
+    price7d: parseFloat(price7d).toFixed(2),
+    price30d: parseFloat(price30d).toFixed(2),
+    price365d: parseFloat(price365d).toFixed(2),
+  };
+}
+
+let trendingStyle = {
+  border: "1px solid",
+  borderRadius: "5rem",
+  fontSize: "3.2rem",
+  marginLeft: "10px",
+  padding: "0.3rem",
+};
+
+let dataSample = [
   {
     id: "BTC",
     currency: "BTC",
@@ -84,81 +198,3 @@ let data = [
     },
   },
 ];
-
-function App() {
-  const [contextObj, setContextObj] = useState({ data: [], url: [] });
-  const [isFetching, setFetching] = useState(true);
-  useEffect(() => {
-    console.log("fetching data");
-    setFetching(true);
-    setTimeout(() => {
-      setFetching(false);
-    }, 3000);
-  }, [contextObj.url]);
-  console.log(data);
-  return (
-    <div className={styles.App}>
-      <Context.Provider value={[contextObj, setContextObj]}>
-        <AutoComplete style={{ margin: "auto" }} />
-        {isFetching ? (
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "3rem", margin: "6rem 0 2rem" }}>
-              Fetching data
-            </p>
-            <CircularProgress />
-          </div>
-        ) : (
-          <>
-            <div
-              id="LogoNameWrapper"
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "1.5rem 0rem 0.7rem",
-              }}
-            >
-              <img
-                id="CurrencyLogo"
-                src="https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/btc.svg"
-                style={{
-                  width: "3rem",
-                }}
-              />
-              <h2 style={{ marginLeft: "0.7" }}>Bitcoin</h2>
-            </div>
-            <div
-              id="rateWrapper"
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "0.5rem 0rem 0.7rem",
-              }}
-            >
-              <h2 style={{ color: "#07e81a" }}>
-                <span id="rate">34,000</span> USD
-              </h2>
-              <div>
-                <TrendingDownIcon
-                  sx={{
-                    color: "#fa0505",
-                    border: "1px solid",
-                    borderRadius: "5rem",
-                    fontSize: "3.2rem",
-                    marginLeft: "10px",
-                    padding: "0.3rem",
-                  }}
-                ></TrendingDownIcon>
-              </div>
-            </div>
-            <LineGraph />
-            <Convert style={{ textAlign: "center", margin: "2rem 0" }} />
-          </>
-        )}
-      </Context.Provider>
-    </div>
-  );
-}
-
-export default App;
