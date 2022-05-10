@@ -48,13 +48,13 @@ function AutoComplete({ style }) {
               "\t\t",
               toCurrency[currency.convert]
             );
-            console.log(
-              "url is : \n",
-              prepareUrl(
-                cryptoCurrency[currency.crypto],
-                toCurrency[currency.convert]
-              )
-            );
+            // console.log(
+            //   "url is : \n",
+            //   prepareUrl(
+            //     cryptoCurrency[currency.crypto],
+            //     toCurrency[currency.convert]
+            //   )
+            // );
 
             setContextObj({
               ...contextObj,
